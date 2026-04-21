@@ -23,7 +23,7 @@ ARG WAIT_BIN=/docker-init.d/01-docker-compose-wait
 
 RUN mkdir -p ${TARGET_DIR}/groups/
 
-LABEL maintainer="galene@flexoft.net"
+#LABEL maintainer=""
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.name="galene"
 LABEL org.label-schema.description="Docker image for the Galène videoconference server"
@@ -32,7 +32,8 @@ LABEL org.label-schema.vcs-url="https://github.com/suitenumerique/gallene-deploy
 LABEL org.label-schema.vcs-ref="${VCS_REF}"
 LABEL org.label-schema.vendor="jech"
 LABEL org.label-schema.version="${VERSION}"
-LABEL org.label-schema.docker.cmd="docker run -it -p 8443:8443 paloys/galene:latest -turn ''" # Temporarily pushed to paloys/galene
+# Temporarily pushed to paloys/galene
+LABEL org.label-schema.docker.cmd="docker run -it -p 8443:8443 paloys/galene:latest -turn ''"
 
 EXPOSE 8443
 EXPOSE 1194/tcp
