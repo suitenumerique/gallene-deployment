@@ -4,6 +4,8 @@ echo "[+] Starting galene ..."
 
 cd ${GALENE_PATH}
 
+[ -f .env ] && source .env
+
 echo "  - exec ${GALENE_PATH}/galene\
 ${GALENE_CPUPROFILE:+ -cpuprofile ${GALENE_CPUPROFILE}}\
 ${GALENE_DATA:+ -data ${GALENE_DATA}}\
