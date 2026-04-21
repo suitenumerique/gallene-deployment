@@ -44,7 +44,7 @@ COPY --from=builder ${DIR}/galene ${TARGET_DIR}/
 COPY --from=builder ${DIR}/static/ ${TARGET_DIR}/static/
 COPY --from=builder ${DIR}/galenectl/galenectl /bin
 
-COPY root/ /
+COPY docker-root/ /
 
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/${WAIT_VERSION}/wait ${WAIT_BIN}
 RUN chmod 0755 ${WAIT_BIN}
