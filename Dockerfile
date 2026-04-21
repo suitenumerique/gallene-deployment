@@ -27,12 +27,12 @@ LABEL maintainer="galene@flexoft.net"
 LABEL org.label-schema.schema-version="1.0"
 LABEL org.label-schema.name="galene"
 LABEL org.label-schema.description="Docker image for the Galène videoconference server"
-LABEL org.label-schema.url="http://galena.org/"
-LABEL org.label-schema.vcs-url="https://github.com/deburau/galene"
+LABEL org.label-schema.url="https://galene.org/"
+LABEL org.label-schema.vcs-url="https://github.com/suitenumerique/gallene-deployment"
 LABEL org.label-schema.vcs-ref="${VCS_REF}"
 LABEL org.label-schema.vendor="jech"
 LABEL org.label-schema.version="${VERSION}"
-LABEL org.label-schema.docker.cmd="docker run -it -p 8443:8443 deburau/galene:latest -turn ''"
+LABEL org.label-schema.docker.cmd="docker run -it -p 8443:8443 paloys/galene:latest -turn ''" # Temporarily pushed to paloys/galene
 
 EXPOSE 8443
 EXPOSE 1194/tcp
