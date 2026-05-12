@@ -1,0 +1,10 @@
+Galène has been deployed.
+
+  HTTPS endpoint: https://{{ .Values.ingress.host }}
+
+The TURN service is a LoadBalancer — it may take a few minutes for an external IP to be assigned.
+Watch its status with:
+
+  kubectl get svc --namespace {{ .Release.Namespace }} {{ include "galene.fullname" . }}-turn -w
+
+Once the IP is available, the init container will write it to the pod's .env file automatically on next start.

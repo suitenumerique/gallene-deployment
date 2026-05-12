@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "galene.fullname" . }}
+  labels:
+    {{- include "galene.labels" . | nindent 4 }}
+spec:
+
+  revisionHistoryLimit: 3
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "galene.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "galene.labels" . | nindent 8 }}
+    spec:
+      serviceAccountName: {{ include "galene.serviceAccountName" . }}
+      initContainers:
+        - name: init-galene-turn
+          image: bitnami/kubectl:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              SERVICE_NAME="{{ include "galene.fullname" . }}-turn"
+
+              echo "Waiting for external IP..."
+              while true; do
+                IP=$(kubectl get svc "$SERVICE_NAME" -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+
+                if [ -n "$IP" ]; then
+                  echo "Found external IP: $IP"
+                  echo "GALENE_TURN=$IP:{{ .Values.turn.port }}" > /env/.env
+                  break
+                fi
+
+                sleep 2
+              done
+          volumeMounts:
+            - name: env-volume
+              mountPath: /env
+        - name: load-config-json-env
+          image: alpine:3.20
+          command:
+            - /bin/sh
+            - -c 
+            - apk add --no-cache jq && jq '.users.admin.password = env.ADMIN_PASSWORD' /opt/galene/data/config.json > /mnt/config.json
+          env:
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "galene.secretName" . }}
+                  key: password
+          volumeMounts:
+            - name: config-template
+              mountPath: /opt/galene/data/config.json
+              subPath: config.json
+            - name: config-generated
+              mountPath: /mnt
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+            - name: turn
+              containerPort: {{ .Values.turn.port }}
+              protocol: UDP
+          {{- with .Values.livenessProbe }}
+          livenessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.readinessProbe }}
+          readinessProbe:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: config-generated
+              mountPath: /opt/galene/data/config.json
+              subPath: config.json
+            - name: env-volume
+              mountPath: /opt/galene/.env
+              subPath: .env
+          env:
+            - name: ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "galene.secretName" . }}
+                  key: username
+            - name: ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "galene.secretName" . }}
+                  key: password
+            {{- if .Values.headless }}
+            - name: GALENE_HEADLESS
+              value: "true"
+            {{- end }}
+      volumes:
+        - name: config-template
+          configMap:
+            name: {{ include "galene.configmapName" . }}
+        - name: config-generated
+          emptyDir: {}
+        - name: env-volume
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

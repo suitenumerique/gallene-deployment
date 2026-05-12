@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "galene.configmapName" . }}
+  labels:
+    {{- include "galene.labels" . | nindent 4 }}
+data:
+  config.json: |
+    {
+      "proxyURL": "https://{{ .Values.ingress.host }}",
+      "canonicalHost": "{{ .Values.ingress.host }}",
+      "writableGroups": true,
+      "users": {
+        "admin":{
+          "password": "PLACEHOLDER",
+          "permissions": "admin"
+        }
+      }
+    }

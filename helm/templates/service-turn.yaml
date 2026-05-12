@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "galene.fullname" . }}-turn
+  labels:
+    {{- include "galene.labels" . | nindent 4 }}
+spec:
+  type: LoadBalancer
+  ports:
+    - port: {{ .Values.turn.port }}
+      targetPort: {{ .Values.turn.port }}
+      protocol: UDP
+      name: turn
+    - port: {{ .Values.turn.port }}
+      targetPort: {{ .Values.turn.port }}
+      protocol: TCP
+      name: turn-tcp
+  selector:
+    {{- include "galene.selectorLabels" . | nindent 4 }}
