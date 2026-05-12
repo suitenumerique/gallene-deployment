@@ -19,7 +19,8 @@ ${GALENE_RECORDINGS:+ -recordings ${GALENE_RECORDINGS}}\
 ${GALENE_REDIRECT:+ -redirect ${GALENE_REDIRECT}}\
 ${GALENE_RELAY_ONLY:+ -relay-only}\
 ${GALENE_STATIC:+ -static ${GALENE_STATIC}}\
-${GALENE_TURN+ -turn ${GALENE_TURN:-''}}"
+${GALENE_TURN+ -turn ${GALENE_TURN:-''}}\
+${GALENE_HEADLESS:+ -headless=${GALENE_HEADLESS}}"
 
 exec ./galene \
       ${GALENE_CPUPROFILE:+-cpuprofile ${GALENE_CPUPROFILE}} \
@@ -34,4 +35,5 @@ exec ./galene \
       ${GALENE_REDIRECT:+-redirect ${GALENE_REDIRECT}} \
       ${GALENE_RELAY_ONLY:+-relay-only} \
       ${GALENE_STATIC:+-static ${GALENE_STATIC}} \
-      ${GALENE_TURN+-turn ${GALENE_TURN:-''}}
+      ${GALENE_TURN+-turn ${GALENE_TURN:-''}} \
+      ${GALENE_HEADLESS:+-headless}

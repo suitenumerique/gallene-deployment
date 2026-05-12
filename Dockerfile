@@ -1,14 +1,16 @@
 ARG DIR=/go/src/galene
 ARG VERSION=1.0
 ARG WAIT_VERSION=2.9.0
+ARG VCS_REF=98ae363da2b5ce5efaedb3c83cf0c4667bedb9ed
 
 FROM golang:alpine AS builder
 ARG DIR
 ARG VERSION
 
 RUN apk --no-cache add git \
-    && git clone --depth 1 --branch galene-$VERSION https://github.com/jech/galene.git ${DIR}
+    && git clone --depth 1 --branch master https://github.com/Paloys/galene-headless.git ${DIR}
 WORKDIR ${DIR}
+RUN git reset --hard ${VCS_REF}
 RUN CGO_ENABLED=0 go build -ldflags='-s -w'
 WORKDIR ${DIR}/galenectl
 RUN go build -ldflags='-s -w'
@@ -16,8 +18,8 @@ RUN go build -ldflags='-s -w'
 FROM alpine
 ARG DIR
 ARG VERSION
-ARG VCS_REF=fcdf8bc0ad0974eb989333dd4fc836818971229c
 ARG TARGET_DIR=/opt/galene
+ARG VCS_REF
 ARG WAIT_VERSION
 ARG WAIT_BIN=/docker-init.d/01-docker-compose-wait
 
