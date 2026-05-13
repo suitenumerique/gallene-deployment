@@ -6,6 +6,7 @@ ARG VCS_REF=98ae363da2b5ce5efaedb3c83cf0c4667bedb9ed
 FROM golang:alpine AS builder
 ARG DIR
 ARG VERSION
+ARG VCS_REF
 
 RUN apk --no-cache add git \
     && git clone --depth 1 --branch master https://github.com/Paloys/galene-headless.git ${DIR}
