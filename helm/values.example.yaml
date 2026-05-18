@@ -50,7 +50,7 @@ livenessProbe:
     command:
       - /bin/sh
       - -c
-      - '[ "$(netstat -nlp | grep galene | wc -l)" -eq 3 ]'
+      - '[ "$(netstat -nlp | grep galene | wc -l)" -ge 3 ]'
   initialDelaySeconds: 10
   periodSeconds: 15
   timeoutSeconds: 5
@@ -61,7 +61,7 @@ readinessProbe:
     command:
       - /bin/sh
       - -c
-      - '[ "$(netstat -nlp | grep galene | wc -l)" -eq 3 ]'
+      - '[ "$(netstat -nlp | grep galene | wc -l)" -ge 3 ]'
   initialDelaySeconds: 5
   periodSeconds: 10
 
