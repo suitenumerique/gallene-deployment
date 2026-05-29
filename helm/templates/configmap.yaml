@@ -15,5 +15,6 @@ data:
           "password": "PLACEHOLDER",
           "permissions": "admin"
         }
-      }
+      },
+      "allowOrigin": {{ .Values.allowOrigin | toJson }}
     }

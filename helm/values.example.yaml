@@ -87,3 +87,6 @@ headless: false
 secrets:
   username: ""
   password: ""
+
+# A list of urls that are allowed to forward requests to Galène (put the url of the frontend here!)
+allowOrigin: []
